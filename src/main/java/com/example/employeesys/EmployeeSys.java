@@ -69,7 +69,7 @@ public class EmployeeSys extends Application {
              }
             //
             System.out.println();
-            //testing the Stack
+            //testing the Stacks
             getEmployee();
             System.out.println(employeeNames);
             System.out.println();
