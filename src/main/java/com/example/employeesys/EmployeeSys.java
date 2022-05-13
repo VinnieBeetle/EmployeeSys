@@ -3,6 +3,7 @@ package com.example.employeesys;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,6 +14,8 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class EmployeeSys extends Application {
 
@@ -37,6 +40,14 @@ public class EmployeeSys extends Application {
     //For tableView - adding employees to it and what not
     ObservableList<Employee> oEmployees = FXCollections.observableArrayList();
 
+    //For a creation of a stack
+    Stack<String> employeeNames = new Stack<String>();
+
+    //For LinkedList
+    LinkedList linky = new LinkedList();
+
+
+
     public static void main(String[] args) {
 
         launch(args);
@@ -44,33 +55,47 @@ public class EmployeeSys extends Application {
 
     //stage stuff
     public void start(Stage stage) {
-        //Creates the txt file if it doesnt exist
+        //Creates the txt file if it doesn't exist
         try {
             FileWriter txtFile = new FileWriter("output.txt", true);
             txtFile.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //search test 22yr olds
-        ArrayList<String> records = reader(filepath,"22", 3);
+            //search test 22yr olds in console
+            ArrayList<String> tests = reader(filepath,"22", 3);
+             for(int i = 0; i < tests.size(); i++){
+                System.out.println(tests.get(i));   //change this
+             }
+            //
+            System.out.println();
+            //testing the Stack
+            getEmployee();
+            System.out.println(employeeNames);
+            System.out.println();
 
-        for(int i = 0; i < records.size(); i++){
-            System.out.println(records.get(i));   //change this
-        }
+            //testing LinkedList
+            System.out.println(linky);
+            System.out.println(linky.getFirst());
+
+
+
 
         //Renaming the stage
         window = stage;
 
 
 
-        //Menu bar start for CRUDOX
+        //Menu bar start for "CRUDOX"
         Menu fileMenu = new Menu("_File");
             MenuItem exit = new MenuItem("Exit");
                 exit.setOnAction(e -> {closeProgram(1);} );
             fileMenu.getItems().add(exit);
         Menu editMenu = new Menu("_Edit");
             MenuItem newEmployee = new MenuItem("Create A New Profile");
-                editMenu.setOnAction(e-> {newEmployee();});
+                editMenu.setOnAction(e-> {
+                    layout1.setCenter(centerMenu);
+                });
             editMenu.getItems().add(newEmployee);
         Menu helpMenu = new Menu("_Help");
             MenuItem about = new MenuItem("About");
@@ -90,8 +115,9 @@ public class EmployeeSys extends Application {
 
         //Buttons
         save = new Button("Save");
-        save.setOnAction(e->{System.out.println("WIP SAVE");});
+        save.setOnAction(e->{newEmployee();});
 
+        /* these are preps for the other buttons
         save = new Button("Save");
         save.setOnAction(e->{System.out.println("WIP SAVE");});
 
@@ -100,6 +126,7 @@ public class EmployeeSys extends Application {
 
         save = new Button("Save");
         save.setOnAction(e->{System.out.println("WIP SAVE");});
+        */
 
         //For table - change to fit to size? maybe
         //Name column
@@ -123,11 +150,39 @@ public class EmployeeSys extends Application {
         table.setItems(getEmployee());
         table.getColumns().addAll(IDColumn, nameColumn, ageColumn, birthColumn);
 
+
+        // menu for inserting a new employee
+        centerMenu = new GridPane();
+        centerMenu.setPadding(new Insets(20,20,20,20));
+        centerMenu.setVgap(8);
+        centerMenu.setHgap(10);
+
+
+        //labels to go along with creating a new employee
+        Label name = new Label("Name");
+        GridPane.setConstraints(name, 0,1);
+
+        Label c = new Label("Age");
+        GridPane.setConstraints(c, 0,2);
+        Label d = new Label("Birthday");
+        GridPane.setConstraints(d, 0,3);
+        Label e = new Label("ID");
+        GridPane.setConstraints(e, 0,4);
+
         //text fields for employee
         nameInput = new TextField();
+        GridPane.setConstraints(nameInput, 1, 1);
         ageInput = new TextField();
+        GridPane.setConstraints(ageInput, 1, 2);
         birthInput = new TextField();
+        GridPane.setConstraints(birthInput, 1, 3);
         IDInput = new TextField();
+        GridPane.setConstraints(IDInput, 1, 4);
+
+
+        GridPane.setConstraints(save, 0, 8);
+
+        centerMenu.getChildren().addAll( name, c, d, e, nameInput, ageInput, birthInput, IDInput, save);
 
         //to load up files
 
@@ -143,14 +198,14 @@ public class EmployeeSys extends Application {
         window.show();
 
     }
-    //display about project popup
 
+    //display about project popup
     public void helpProgram(int num){
-        Boolean answer = ConfirmBox.display("About",Help.about(), num);
+        ConfirmBox.display("About",Help.about(), num);
     }
     //display save confirmation popup
     public void savedProgram(int num){
-        Boolean answer = ConfirmBox.display("Saving", "You have saved!", num);
+        ConfirmBox.display("Saving", "You have saved!", num);
     }
     // double check if they want to exit popup
     public void closeProgram(int num){
@@ -248,6 +303,7 @@ public class EmployeeSys extends Application {
     }
 
     //for table view
+    //and includes a stack of their names
     public ObservableList<Employee> getEmployee(){
 
         String currentLine;
@@ -261,7 +317,8 @@ public class EmployeeSys extends Application {
 
                     data = currentLine.split(",");
                     oEmployees.add(new Employee(data[0],data[1],data[2],data[3],data[4],data[5]));
-
+                    employeeNames.add(data[1]);
+                    linky.add(data[1]);
 
                 }
 
@@ -277,30 +334,54 @@ public class EmployeeSys extends Application {
         return oEmployees;
 
     }
-    //once I add the add page and textfield for them thingys I'll connect them to add into the text file and update
+    //once I add the add page and text field for them thingies I'll connect them to add into the text file and update
     public void newEmployee(){
-        Employee employee = new Employee();
-        ;
 
-        try {
-            FileWriter fw = new FileWriter(filepath, true);
-            BufferedWriter bw = new BufferedWriter(fw);
+        //it updates the table too, checker is used to make sure that all the textfields are filled out
+        if(checker()) {
+            try {
+                FileWriter fw = new FileWriter(filepath, true);
+                BufferedWriter bw = new BufferedWriter(fw);
 
-            //All the stuff is getting replaced with getters
-            oEmployees.add(new Employee("123123","sec","sec","sec","sec","sec"));
 
-            bw.write("\n" + "123123," + "sec," + "sec," + "sec,"+ "sec,"+"sec");
+                //All the stuff is getting replaced with getters
+                oEmployees.add(new Employee(IDInput.getText(), nameInput.getText(), ageInput.getText(), birthInput.getText(), "sec", "sec"));
 
-            //oEmployees.add(new Employee(data[0],data[1],data[2],data[3],data[4],data[5]));
+                bw.write("\n" + IDInput.getText() + "," + nameInput.getText() + "," + ageInput.getText() + "," + birthInput.getText() + "," + "sec," + "sec");
 
-            bw.close();
-            fw.close();
+                bw.close();
+                fw.close();
 
-        }catch (Exception e){
-            System.out.println(e);
+
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            layout1.setCenter(table);
+            savedProgram(2);
+        }else {
+            ConfirmBox.display("Error", "There seems to be empty texts", 2);
         }
-
     }
+
+    public boolean checker(){
+        boolean check = true;
+
+        if(
+                IDInput.getText().trim().isEmpty()
+                ||nameInput.getText().trim().isEmpty()
+                ||ageInput.getText().trim().isEmpty()
+                ||birthInput.getText().trim().isEmpty()
+
+
+
+        ){
+            check = false;
+
+        }
+          return check;
+    }
+
+
 
     //generic array retriever
     public static <T> void displayArray(T[] array){
