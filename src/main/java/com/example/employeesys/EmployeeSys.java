@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 
 import java.io.*;
 import java.util.ArrayList;
+
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -46,6 +47,13 @@ public class EmployeeSys extends Application {
     //For LinkedList
     LinkedList linky = new LinkedList();
 
+    //adding hashfunction
+    HashFunction theFunc = new HashFunction(40); // it is set up in getEmployee()
+    String[] elementsAdd = new String[40] ;
+    String[] hashArray;
+
+    //for a hardcoded binary tree
+    TreeNode roots;
 
 
     public static void main(String[] args) {
@@ -62,6 +70,7 @@ public class EmployeeSys extends Application {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //////////////////////////////////////////////////////////////
             //search test 22yr olds in console
             ArrayList<String> tests = reader(filepath,"22", 3);
              for(int i = 0; i < tests.size(); i++){
@@ -69,15 +78,10 @@ public class EmployeeSys extends Application {
              }
             //
             System.out.println();
-            //testing the Stacks
-            getEmployee();
-            System.out.println(employeeNames);
-            System.out.println();
 
-            //testing LinkedList
-            System.out.println(linky);
-            System.out.println(linky.getFirst());
-
+        //hard coded binary tree
+        createBinaryTree();
+        /////////////////////////////////////////////////////////////
 
 
 
@@ -149,6 +153,27 @@ public class EmployeeSys extends Application {
         table = new TableView<>();
         table.setItems(getEmployee());
         table.getColumns().addAll(IDColumn, nameColumn, ageColumn, birthColumn);
+
+
+
+
+        //testing the Stacks
+        System.out.println(employeeNames);
+        System.out.println();
+
+        //testing LinkedList
+        System.out.println(linky);
+        System.out.println(linky.getFirst());
+
+        //tsting elementsAdd
+        System.out.println(elementsAdd[1]);
+
+        //Using  of a hash table
+        //theFunc.hashFunction1(elementsAdd, hashArray);
+
+
+
+
 
 
         // menu for inserting a new employee
@@ -309,16 +334,29 @@ public class EmployeeSys extends Application {
         String currentLine;
         String[] data;
 
+        //hashtable space
+        int i = 1;
+        //String to be inserted for hashtable
+        String string;
+        int j = 0;
+
             try{
                 FileReader fr = new FileReader(filepath);
                 BufferedReader br = new BufferedReader(fr);
 
-                while((currentLine = br.readLine()) != null){
 
-                    data = currentLine.split(",");
-                    oEmployees.add(new Employee(data[0],data[1],data[2],data[3],data[4],data[5]));
-                    employeeNames.add(data[1]);
-                    linky.add(data[1]);
+                    while((currentLine = br.readLine()) != null){
+
+                        data = currentLine.split(",");
+                        oEmployees.add(new Employee(data[0],data[1],data[2],data[3],data[4],data[5]));
+                        employeeNames.add(data[1]);
+                        linky.add(data[1]);
+
+                        //adding up to 30 some elements into hash array
+                        if (j <31) {
+                            elementsAdd[j] = data[1];
+                            j++;
+                        }
 
                 }
 
@@ -330,6 +368,7 @@ public class EmployeeSys extends Application {
             catch(Exception e){
                 System.out.println(e);
             }
+
 
         return oEmployees;
 
@@ -381,6 +420,32 @@ public class EmployeeSys extends Application {
           return check;
     }
 
+    //basic node for binary tree
+    public class TreeNode {
+        int data;
+        TreeNode left;
+        TreeNode right;
+
+        public TreeNode(int data){
+            this.data = data;
+        }
+    }
+    //make binary tree
+    public void createBinaryTree(){
+        TreeNode first = new TreeNode(1);
+        TreeNode second = new TreeNode(2);
+        TreeNode third = new TreeNode(3);
+        TreeNode fourth = new TreeNode(4);
+        TreeNode fifth = new TreeNode(5);
+
+        roots = first;
+        first.left = second;
+        first.right = third;
+
+        second.left = fourth;
+        second.right = fifth;
+
+    }
 
 
     //generic array retriever
