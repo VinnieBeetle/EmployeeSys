@@ -1,3 +1,8 @@
+// Vincent Ho
+//5/13/2022
+//CMIS202-SecONL5 Spring 2022
+//This project manages and saves employees
+//information and allows to search through them
 package com.example.employeesys;
 
 import javafx.application.Application;
@@ -24,12 +29,14 @@ public class EmployeeSys extends Application {
     Stage window;
     BorderPane layout1;
     Scene scene;
-    Button save, prev, next, clockIn, clockOut;
-    GridPane centerMenu;
+    Button save, search, prev, next, clockIn, clockOut;
+    GridPane centerMenu, centerMenu1;
     Group root;
-    //text fields
+    //text fields for new employee
     TextField nameInput, ageInput, birthInput;
     TextField IDInput;
+    //text field for searching an employee's name
+    TextField searchNameInput;
     //File that holds employee information
     String filepath = "output.txt";
     //Table view
@@ -55,6 +62,10 @@ public class EmployeeSys extends Application {
     //for a hardcoded binary tree
     TreeNode roots;
 
+    //multithreadding?!?!
+    Multithreading multithread = new Multithreading();
+
+
 
     public static void main(String[] args) {
 
@@ -63,6 +74,7 @@ public class EmployeeSys extends Application {
 
     //stage stuff
     public void start(Stage stage) {
+
         //Creates the txt file if it doesn't exist
         try {
             FileWriter txtFile = new FileWriter("output.txt", true);
@@ -81,6 +93,12 @@ public class EmployeeSys extends Application {
 
         //hard coded binary tree
         createBinaryTree();
+
+        //creating 5 threads that are counting up to 5
+        for(int i = 0; i <5; i++) {
+            Multithreading multithread = new Multithreading();
+            multithread.start();
+        }
         /////////////////////////////////////////////////////////////
 
 
@@ -107,24 +125,29 @@ public class EmployeeSys extends Application {
             helpMenu.getItems().add(about);
         Menu searchMenu = new Menu("_Search");
             MenuItem searchID = new MenuItem("ID");
-                searchID.setOnAction(e -> {System.out.println("WIP SWITCH SCENE");});
+                searchID.setOnAction(e -> {System.out.println("WIP SWITCH SCENE"); });
+            //searchMenu.getItems().add(searchID);
+
             MenuItem searchName = new MenuItem("Name");
-                searchName.setOnAction(e -> {System.out.println("WIP SWITCH SCENE");});
+                searchName.setOnAction(e -> {
+                    layout1.setCenter(centerMenu1);
+                });
+            searchMenu.getItems().add(searchName);
             MenuItem searchAge = new MenuItem("Age");
                 searchAge.setOnAction(e -> {System.out.println("WIP SWITCH SCENE");});
 
         //MenuBar
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
+        menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu, searchMenu);
 
         //Buttons
         save = new Button("Save");
         save.setOnAction(e->{newEmployee();});
 
-        /* these are preps for the other buttons
-        save = new Button("Save");
-        save.setOnAction(e->{System.out.println("WIP SAVE");});
 
+        search = new Button("Search");
+        save.setOnAction(e->{  ;});
+        /* these are preps for the other buttons
         save = new Button("Save");
         save.setOnAction(e->{System.out.println("WIP SAVE");});
 
@@ -169,14 +192,15 @@ public class EmployeeSys extends Application {
         System.out.println(elementsAdd[1]);
 
         //Using  of a hash table
-        //theFunc.hashFunction1(elementsAdd, hashArray);
+            /// ????
+        //theFunc.hashFunction1(elementsAdd, theFunc.hashArray);
 
 
 
 
 
 
-        // menu for inserting a new employee
+        // layout menu for inserting a new employee
         centerMenu = new GridPane();
         centerMenu.setPadding(new Insets(20,20,20,20));
         centerMenu.setVgap(8);
@@ -209,9 +233,25 @@ public class EmployeeSys extends Application {
 
         centerMenu.getChildren().addAll( name, c, d, e, nameInput, ageInput, birthInput, IDInput, save);
 
-        //to load up files
+        //layout for searching for an ID
+        centerMenu1 = new GridPane();
+        centerMenu1.setPadding(new Insets(20,20,20,20));
+        centerMenu1.setVgap(8);
+        centerMenu1.setHgap(10);
+
+        Label fullName = new Label("Name");
+        GridPane.setConstraints(fullName, 0,1);
+
+        searchNameInput = new TextField();
+        GridPane.setConstraints(searchNameInput, 1, 1);
+
+        GridPane.setConstraints(search, 0,2);
+
+        centerMenu1.getChildren().addAll(fullName, searchNameInput, search);
 
 
+
+        //layout menu for everything
         layout1 = new BorderPane();
         layout1.setTop(menuBar);
         layout1.setCenter(table);

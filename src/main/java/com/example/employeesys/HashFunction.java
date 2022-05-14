@@ -7,7 +7,6 @@ public class HashFunction {
     //for HashTable
     String[] hashArray;
     int arraySize;
-    int itemsInArray;
 
     public void hashFunction1(String[] stringsForArray, String[] hashArray){
 
