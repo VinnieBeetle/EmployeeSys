@@ -55,7 +55,7 @@ public class EmployeeSys extends Application {
     LinkedList linky = new LinkedList();
 
     //adding hashfunction
-    HashFunction theFunc = new HashFunction(40); // it is set up in getEmployee()
+    HashFunction theFunc = new HashFunction(40);
     String[] elementsAdd = new String[40] ;
     String[] hashArray;
 
@@ -84,11 +84,14 @@ public class EmployeeSys extends Application {
         }
         //////////////////////////////////////////////////////////////
             //search test 22yr olds in console
+
+
             ArrayList<String> tests = reader(filepath,"22", 3);
-             for(int i = 0; i < tests.size(); i++){
+
+            for(int i = 0; i < tests.size(); i++){
                 System.out.println(tests.get(i));   //change this
-             }
-            //
+            }
+
             System.out.println();
 
         //hard coded binary tree
@@ -99,6 +102,8 @@ public class EmployeeSys extends Application {
             Multithreading multithread = new Multithreading();
             multithread.start();
         }
+
+
         /////////////////////////////////////////////////////////////
 
 
@@ -146,7 +151,10 @@ public class EmployeeSys extends Application {
 
 
         search = new Button("Search");
-        save.setOnAction(e->{  ;});
+        search.setOnAction(e->{ search(searchNameInput.getText());});
+
+
+
         /* these are preps for the other buttons
         save = new Button("Save");
         save.setOnAction(e->{System.out.println("WIP SAVE");});
@@ -355,16 +363,23 @@ public class EmployeeSys extends Application {
         return returnData;
 
     }
+
+
     //assists in reader, finds key term
-    public String search(String searched){
+    public void search(String searched){
 
         String toString = "";
-        ArrayList<String> records = reader(filepath,searched, 2);
 
-        for(int i = 0; i < records.size(); i++){
-            toString = toString + records.get(i) +"\n";   //change this
+        ArrayList<String> tests = reader(filepath, searched, 2);
+
+        for(int i = 0; i < tests.size(); i++){
+            System.out.println(tests.get(i));
+            toString = toString + tests.get(i) + "\n"; //change this
         }
-        return toString;
+
+        ConfirmBox.display("Names", toString, 2);
+        layout1.setCenter(table);
+
     }
 
     //for table view
@@ -389,6 +404,7 @@ public class EmployeeSys extends Application {
 
                         data = currentLine.split(",");
                         oEmployees.add(new Employee(data[0],data[1],data[2],data[3],data[4],data[5]));
+
                         employeeNames.add(data[1]);
                         linky.add(data[1]);
 
@@ -487,6 +503,19 @@ public class EmployeeSys extends Application {
 
     }
 
+    public void searchingName(){
+
+        String message = "";
+
+        String input = searchNameInput.getText();
+
+
+
+        ConfirmBox.display("Names",message, 2);
+
+        layout1.setCenter(table);
+
+    }
 
     //generic array retriever
     public static <T> void displayArray(T[] array){
